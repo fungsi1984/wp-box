@@ -99,6 +99,36 @@ server {
 }
 ```
 
+```
+somehow this is works
+server {
+    listen 80;
+    server_name _;
+    root /var/www/html;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+
+        # Add these for better security
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        # fastcgi_index index.php;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+
+```
+
 Enable the site and restart Nginx:
 ```bash
 sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
@@ -184,3 +214,14 @@ For quick PHP testing:
 echo "<?php phpinfo(); ?>" | sudo tee /var/www/wordpress/test.php
 ```
 (Remember to remove this file after testing)
+
+
+# NGINX BASIC
+`/etc/nginx/`  
+The /etc/nginx/ directory is the default configuration root
+
+`/etc/nginx/nginx.conf` 
+The /etc/nginx/nginx.conf file is the default configuration entry point 
+
+`/etc/nginx/conf.d/`
+The /etc/nginx/conf.d/ directory contains the default HTTP server configuration
